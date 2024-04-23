@@ -126,10 +126,6 @@ class AvatarController {
     }
 
     async getAll(req, res) {
-        const { page } = req.params;
-        const LIMIT = 30;
-        const OFFSET = (page * LIMIT) - LIMIT;
-
         const avatars = await Avatar.findAll({
             order: [['id', 'DESC']],
             include: [
@@ -141,9 +137,7 @@ class AvatarController {
                     model: AvatarLikes,
                     as: 'likes',
                 },
-            ],
-            limit: `${LIMIT}`,
-            offset: `${OFFSET}`
+            ]
         });
         const colAvatars = await Avatar.count();
         return res.json({avatars, colAvatars});
