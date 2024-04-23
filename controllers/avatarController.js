@@ -1,6 +1,5 @@
 const {
     Avatar,
-    AvatarModeration,
     AvatarTag,
     User,
     AvatarLikes,
@@ -8,8 +7,6 @@ const {
 const ApiError = require('../error/ApiError');
 const path = require('path');
 const uuid = require('uuid');
-const { Op } = require('sequelize');
-const { Sequelize } = require('../db');
 class AvatarController {
     async create(req, res, next) {
         try {
