@@ -7,10 +7,11 @@ const ApiError = require('../../error/ApiError');
 const path = require('path');
 const uuid = require('uuid');
 const { User } = require('../../models/User/model');
+
 class AvatarController {
     async create(req, res, next) {
         try {
-            let { userId, categoryId, tags } = req.body;
+            let { userId, tags } = req.body;
             const { img } = req.files;
             const fileName = uuid.v4() + '.jpg';
             img.mv(path.resolve(__dirname, '..', 'static', fileName));

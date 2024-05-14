@@ -1,6 +1,7 @@
 const ApiError = require('../../error/ApiError');
 const { Avatar } = require('../../models/Avatar/model');
 const { Comment } = require('../../models/Comment/model');
+const { User } = require('../../models/User/model');
 
 class CommentController {
     async create(req, res, next) {
@@ -57,7 +58,13 @@ class CommentController {
                 return next(ApiError.badRequest(`Не удалось найти аватарку с id ${avatarId}`));
             }
 
-            const comments = await Comment.findAll({ where: { avatarId } });
+            const comments = await Comment.findAll({
+                where: { avatarId },
+                include: [{
+                    model: User,
+                    as: 'user'
+                }]
+            });
 
             return res.json({ comments });
         } catch (err) {

@@ -15,9 +15,9 @@ User.belongsToMany(User, {
 })
 
 User.hasMany(Comment)
-Comment.belongsTo(User)
+Comment.belongsTo(User, { as: 'user'})
 
-Avatar.hasMany(Comment)
+Avatar.hasMany(Comment, {as: 'comments'})
 Comment.belongsTo(Avatar)
 
 User.hasMany(Avatar)
