@@ -3,6 +3,11 @@ const { Avatar } = require('../../models/Avatar/model');
 const { Comment } = require('../../models/Comment/model');
 const { User } = require('../../models/User/model');
 
+const commentModelsInclude = [{
+    model: User,
+    as: 'user'
+}]
+
 class CommentController {
     async create(req, res, next) {
         try {
@@ -19,8 +24,12 @@ class CommentController {
             }
 
             const userComment = await Comment.create({ comment, userId: user.id, avatarId });
+            const commentWithUser = await Comment.findOne({
+                where: { id: userComment.id },
+                include: commentModelsInclude
+            })
 
-            return res.json({ comment: userComment });
+            return res.json({ comment: commentWithUser });
         } catch (err) {
             return next(ApiError.badRequest(`Ошибка при создании комментария \n ${err}`));
         }
@@ -60,10 +69,7 @@ class CommentController {
 
             const comments = await Comment.findAll({
                 where: { avatarId },
-                include: [{
-                    model: User,
-                    as: 'user'
-                }]
+                include: commentModelsInclude
             });
 
             return res.json({ comments });

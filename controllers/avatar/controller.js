@@ -8,7 +8,7 @@ const path = require('path');
 const uuid = require('uuid');
 const { User } = require('../../models/User/model');
 
-const avatarModelsIncludes = [
+const avatarModelsInclude = [
     {
         model: AvatarTag,
         as: 'tags',
@@ -35,7 +35,7 @@ class AvatarController {
             const userAvatars = await Avatar.findAll({
                 where: {userId},
                 order: [['id', 'DESC']],
-                include: avatarModelsIncludes,
+                include: avatarModelsInclude,
             });
             const user = await User.findByPk(userId);
             await user.update({ publications: user.publications + 1 });
@@ -69,7 +69,7 @@ class AvatarController {
         const userAvatars = await Avatar.findAll({
             where: {userId},
             order: [['id', 'DESC']],
-            include: avatarModelsIncludes,
+            include: avatarModelsInclude,
         });
         return res.json(userAvatars);
     }
@@ -81,7 +81,7 @@ class AvatarController {
 
         const avatar = await Avatar.findByPk(avatarId, {
             order: [['id', 'DESC']],
-            include: avatarModelsIncludes,
+            include: avatarModelsInclude,
         });
 
         return res.json(avatar);
@@ -96,7 +96,7 @@ class AvatarController {
 
         const avatar = await Avatar.findByPk(avatarId, {
             order: [['id', 'DESC']],
-            include: avatarModelsIncludes,
+            include: avatarModelsInclude,
         });
 
         return res.json(avatar);
@@ -116,7 +116,7 @@ class AvatarController {
         const avatars = await Avatar.findAll({
             where: { userId },
             order: [['id', 'DESC']],
-            include: avatarModelsIncludes,
+            include: avatarModelsInclude,
         });
         return res.json(avatars);
     }
@@ -125,7 +125,7 @@ class AvatarController {
         try {
             const avatars = await Avatar.findAll({
                 order: [['id', 'DESC']],
-                include: avatarModelsIncludes
+                include: avatarModelsInclude
             });
             const colAvatars = await Avatar.count();
             return res.json({avatars, colAvatars});
@@ -138,7 +138,7 @@ class AvatarController {
         const { tag } = req.params;
         const avatars = await Avatar.findAll({
             order: [['id', 'DESC']],
-            include: avatarModelsIncludes,
+            include: avatarModelsInclude,
         });
         return res.json(avatars);
     }
