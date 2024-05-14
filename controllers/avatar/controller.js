@@ -79,7 +79,10 @@ class AvatarController {
 
         await AvatarLikes.create({ avatarId, userId });
 
-        const avatar = await this.getAvatar(avatarId);
+        const avatar = await Avatar.findByPk(avatarId, {
+            order: [['id', 'DESC']],
+            include: avatarModelsIncludes,
+        });
 
         return res.json(avatar);
     }
@@ -91,7 +94,10 @@ class AvatarController {
             where: { avatarId, userId },
         });
 
-        const avatar = await this.getAvatar(avatarId);
+        const avatar = await Avatar.findByPk(avatarId, {
+            order: [['id', 'DESC']],
+            include: avatarModelsIncludes,
+        });
 
         return res.json(avatar);
     }
@@ -135,24 +141,6 @@ class AvatarController {
             include: avatarModelsIncludes,
         });
         return res.json(avatars);
-    }
-
-    async getAvatar(avatarId) {
-        const avatar = await Avatar.findByPk(avatarId, {
-            order: [['id', 'DESC']],
-            include: [
-                {
-                    model: AvatarTag,
-                    as: 'tags',
-                },
-                {
-                    model: AvatarLikes,
-                    as: 'likes',
-                },
-            ],
-        });
-        
-        return avatar;
     }
 }
 
