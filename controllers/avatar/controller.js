@@ -8,6 +8,22 @@ const path = require('path');
 const uuid = require('uuid');
 const { User } = require('../../models/User/model');
 
+const avatarModelsIncludes = [
+    {
+        model: AvatarTag,
+        as: 'tags',
+    },
+    {
+        model: AvatarLikes,
+        as: 'likes',
+    },
+    {
+        model: User,
+        as: 'user',
+        attributes: { exclude: ['password'] }
+    }
+]
+
 class AvatarController {
     async create(req, res, next) {
         try {
@@ -19,16 +35,7 @@ class AvatarController {
             const userAvatars = await Avatar.findAll({
                 where: {userId},
                 order: [['id', 'DESC']],
-                include: [
-                    {
-                        model: AvatarTag,
-                        as: 'tags',
-                    },
-                    {
-                        model: AvatarLikes,
-                        as: 'likes',
-                    },
-                ],
+                include: avatarModelsIncludes,
             });
             const user = await User.findByPk(userId);
             await user.update({ publications: user.publications + 1 });
@@ -62,16 +69,7 @@ class AvatarController {
         const userAvatars = await Avatar.findAll({
             where: {userId},
             order: [['id', 'DESC']],
-            include: [
-                {
-                    model: AvatarTag,
-                    as: 'tags',
-                },
-                {
-                    model: AvatarLikes,
-                    as: 'likes',
-                },
-            ],
+            include: avatarModelsIncludes,
         });
         return res.json(userAvatars);
     }
@@ -81,7 +79,7 @@ class AvatarController {
 
         await AvatarLikes.create({ avatarId, userId });
 
-        const avatar = await getAvatar(avatarId);
+        const avatar = await this.getAvatar(avatarId);
 
         return res.json(avatar);
     }
@@ -93,7 +91,7 @@ class AvatarController {
             where: { avatarId, userId },
         });
 
-        const avatar = await getAvatar(avatarId);
+        const avatar = await this.getAvatar(avatarId);
 
         return res.json(avatar);
     }
@@ -112,16 +110,7 @@ class AvatarController {
         const avatars = await Avatar.findAll({
             where: { userId },
             order: [['id', 'DESC']],
-            include: [
-                {
-                    model: AvatarTag,
-                    as: 'tags',
-                },
-                {
-                    model: AvatarLikes,
-                    as: 'likes',
-                },
-            ],
+            include: avatarModelsIncludes,
         });
         return res.json(avatars);
     }
@@ -130,21 +119,12 @@ class AvatarController {
         try {
             const avatars = await Avatar.findAll({
                 order: [['id', 'DESC']],
-                include: [
-                    {
-                        model: AvatarTag,
-                        as: 'tags',
-                    },
-                    {
-                        model: AvatarLikes,
-                        as: 'likes',
-                    },
-                ]
+                include: avatarModelsIncludes
             });
             const colAvatars = await Avatar.count();
             return res.json({avatars, colAvatars});
         } catch (err) {
-            return next(ApiError.badRequest(`Не удалось получить аватарки \n ${err}`));
+            return next(ApiError.internal(`Не удалось получить аватарки ${err}`));
         }
     }
 
@@ -152,11 +132,18 @@ class AvatarController {
         const { tag } = req.params;
         const avatars = await Avatar.findAll({
             order: [['id', 'DESC']],
+            include: avatarModelsIncludes,
+        });
+        return res.json(avatars);
+    }
+
+    async getAvatar(avatarId) {
+        const avatar = await Avatar.findByPk(avatarId, {
+            order: [['id', 'DESC']],
             include: [
                 {
                     model: AvatarTag,
                     as: 'tags',
-                    where: { name: tag },
                 },
                 {
                     model: AvatarLikes,
@@ -164,26 +151,9 @@ class AvatarController {
                 },
             ],
         });
-        return res.json(avatars);
+        
+        return avatar;
     }
-}
-
-async function getAvatar(avatarId) {
-    const avatar = await Avatar.findByPk(avatarId, {
-        order: [['id', 'DESC']],
-        include: [
-            {
-                model: AvatarTag,
-                as: 'tags',
-            },
-            {
-                model: AvatarLikes,
-                as: 'likes',
-            },
-        ],
-    });
-    
-    return avatar;
 }
 
 module.exports = new AvatarController();
