@@ -1,7 +1,7 @@
 const Router = require('express');
 const router = new Router();
-const followerController = require('../controllers/followerController');
-const authMiddleware = require('../middleware/authMiddleware');
+const followerController = require('../../controllers/follower/controller');
+const authMiddleware = require('../../middleware/authMiddleware');
 
 router.post('/follow', authMiddleware, followerController.follow);
 router.delete('/unfollow/:userId', authMiddleware, followerController.unfollow);

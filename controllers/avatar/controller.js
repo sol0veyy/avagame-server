@@ -1,12 +1,12 @@
 const {
     Avatar,
     AvatarTag,
-    User,
     AvatarLikes,
-} = require('../models/models');
-const ApiError = require('../error/ApiError');
+} = require('../../models/Avatar/model');
+const ApiError = require('../../error/ApiError');
 const path = require('path');
 const uuid = require('uuid');
+const { User } = require('../../models/User/model');
 class AvatarController {
     async create(req, res, next) {
         try {
@@ -125,22 +125,26 @@ class AvatarController {
         return res.json(avatars);
     }
 
-    async getAll(req, res) {
-        const avatars = await Avatar.findAll({
-            order: [['id', 'DESC']],
-            include: [
-                {
-                    model: AvatarTag,
-                    as: 'tags',
-                },
-                {
-                    model: AvatarLikes,
-                    as: 'likes',
-                },
-            ]
-        });
-        const colAvatars = await Avatar.count();
-        return res.json({avatars, colAvatars});
+    async getAll(req, res, next) {
+        try {
+            const avatars = await Avatar.findAll({
+                order: [['id', 'DESC']],
+                include: [
+                    {
+                        model: AvatarTag,
+                        as: 'tags',
+                    },
+                    {
+                        model: AvatarLikes,
+                        as: 'likes',
+                    },
+                ]
+            });
+            const colAvatars = await Avatar.count();
+            return res.json({avatars, colAvatars});
+        } catch (err) {
+            return next(ApiError.badRequest(`Не удалось получить аватарки \n ${err}`));
+        }
     }
 
     async getByTag(req, res) {

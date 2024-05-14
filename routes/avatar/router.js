@@ -1,7 +1,6 @@
 const Router = require('express')
 const router = new Router()
-const avatarController = require('../controllers/avatarController')
-
+const avatarController = require('../../controllers/avatar/controller')
 
 router.get('/', avatarController.getAll);
 router.post('/', avatarController.create);

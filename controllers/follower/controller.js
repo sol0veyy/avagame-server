@@ -1,6 +1,6 @@
-const { where, Op } = require("sequelize")
-const ApiError = require("../error/ApiError")
-const { UserFollower, User } = require("../models/models")
+const { Op } = require("sequelize")
+const ApiError = require("../../error/ApiError")
+const { UserFollower, User } = require("../../models/User/model");
 
 class FollowerController {
     async follow(req, res, next) {
