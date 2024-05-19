@@ -6,6 +6,6 @@ const router = new Router();
 
 router.get('/:avatarId', CommentController.getAll);
 router.post('/', authMiddleware, CommentController.create);
-router.delete('/', authMiddleware, CommentController.remove);
+router.delete('/:commentId', authMiddleware, CommentController.remove);
 
 module.exports = router;

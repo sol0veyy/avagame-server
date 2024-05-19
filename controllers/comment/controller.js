@@ -37,7 +37,7 @@ class CommentController {
 
     async remove(req, res, next) {
         try {
-            const { commentId } = req.body;
+            const { commentId } = req.params;
             const user = req.user;
 
             const comment = await Comment.findByPk(commentId);
