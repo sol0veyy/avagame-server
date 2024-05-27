@@ -77,7 +77,7 @@ class UserController {
         if (isImg === "true") {
             const { img } = req.files;
             let fileName = uuid.v4() + ".jpg";
-            img.mv(path.resolve(__dirname, '..', 'static', fileName));
+            img.mv(path.resolve(__dirname, '..', '..', 'static', fileName));
             await user.update({ img: fileName });
         }
         if (login) {
